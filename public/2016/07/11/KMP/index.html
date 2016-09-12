@@ -1,0 +1,577 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>字符串匹配--KMP算法 | XuKai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Xu Kai">
+    
+
+    
+    <meta name="description" content="字符串匹配是经常用到的操作，KMP算法是由3个人的名字的开头字母组成的，KMP算法的全称是Knuth-Morris-Pratt算法，其中K就是大名鼎鼎的Donald Knuth。
+暴力匹配字符串匹配简单的方法使用暴力算法。使用的示例是T = xyxxyxyxyyxyxyxyyxyxyxx， P = xyxyyxyxyxx, 要在T中找到P中开始出现的位置。第一次因为T[4] 和 P[4]不匹配,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串匹配--KMP算法">
+<meta property="og:url" content="http://xukai.xyz/2016/07/11/KMP/index.html">
+<meta property="og:site_name" content="XuKai">
+<meta property="og:description" content="字符串匹配是经常用到的操作，KMP算法是由3个人的名字的开头字母组成的，KMP算法的全称是Knuth-Morris-Pratt算法，其中K就是大名鼎鼎的Donald Knuth。
+暴力匹配字符串匹配简单的方法使用暴力算法。使用的示例是T = xyxxyxyxyyxyxyxyyxyxyxx， P = xyxyyxyxyxx, 要在T中找到P中开始出现的位置。第一次因为T[4] 和 P[4]不匹配,">
+<meta property="og:image" content="http://xukai.xyz/robust.jpg">
+<meta property="og:image" content="http://xukai.xyz/suffix.jpg">
+<meta property="og:updated_time" content="2016-07-11T14:35:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="字符串匹配--KMP算法">
+<meta name="twitter:description" content="字符串匹配是经常用到的操作，KMP算法是由3个人的名字的开头字母组成的，KMP算法的全称是Knuth-Morris-Pratt算法，其中K就是大名鼎鼎的Donald Knuth。
+暴力匹配字符串匹配简单的方法使用暴力算法。使用的示例是T = xyxxyxyxyyxyxyxyyxyxyxx， P = xyxyyxyxyxx, 要在T中找到P中开始出现的位置。第一次因为T[4] 和 P[4]不匹配,">
+
+    
+    <link rel="alternative" href="/atom.xml" title="XuKai" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.png">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/name2.png" alt="XuKai" title="XuKai"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="XuKai">XuKai</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:xukai.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/07/11/KMP/" title="字符串匹配--KMP算法" itemprop="url">字符串匹配--KMP算法</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Xu Kai" target="_blank" itemprop="author">Xu Kai</a>
+		
+  <p class="article-time">
+    <time datetime="2016-07-11T14:21:30.000Z" itemprop="datePublished"> 发表于 2016-07-11</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#暴力匹配"><span class="toc-number">1.</span> <span class="toc-text">暴力匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KMP算法"><span class="toc-number">2.</span> <span class="toc-text">KMP算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改进"><span class="toc-number">2.1.</span> <span class="toc-text">改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next表"><span class="toc-number">2.2.</span> <span class="toc-text">next表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#匹配算法"><span class="toc-number">2.3.</span> <span class="toc-text">匹配算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next表的计算"><span class="toc-number">2.4.</span> <span class="toc-text">next表的计算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复杂度"><span class="toc-number">3.</span> <span class="toc-text">复杂度</span></a></li></ol>
+		
+		</div>
+		
+		<p>字符串匹配是经常用到的操作，KMP算法是由3个人的名字的开头字母组成的，KMP算法的全称是Knuth-Morris-Pratt算法，其中K就是大名鼎鼎的Donald Knuth。</p>
+<h2 id="暴力匹配"><strong>暴力匹配</strong></h2><p>字符串匹配简单的方法使用暴力算法。使用的示例是T = xyxxyxyxyyxyxyxyyxyxyxx， P = xyxyyxyxyxx, 要在T中找到P中开始出现的位置。<br><img src="robust.jpg" alt="暴力求解过程"><br>第一次因为T[4] 和 P[4]不匹配, 则重新开始，从T[2]开始，依次比较。</p>
+<h2 id="KMP算法"><strong>KMP算法</strong></h2><h3 id="改进"><strong>改进</strong></h3><p>回过头看看暴力求解的算法，其实当没匹配时，没必要每次向右移动一位重新进行比较，因为当在某个位置T与P不匹配时，可以利用已经匹配的位置的信息来将P尽量一次向右移动多位。<br>比如上图中的匹配过程，在第4次匹配过程中，当匹配到第5个字符时，发现了不匹配字符，但是前面4个字符是匹配的，通过P可以知道T中匹配的4个字符xyxy，这四个字符的后缀是P[1..4]=xyxy，P[2..4]=yxy，P[3..4]=xy，P[4..4]=y，去掉第一个后缀后，则剩下P[2..4]=yxy，P[3..4]=xy，P[4..4]=y，我们让这三个后缀与匹配的字符串从开始位置进行比较，发现P[3..4]=xy可以匹配4个字符中的前两个字符，我们可以直接将P向右移动两位，因为我们知道向右移动一位T中与P比较的3个字符就是yxy, 但是这三个字符通过上面P[2..4]的比较过程可以知道并不能与P中前三个字符匹配，因此可以直接跳过。</p>
+<h3 id="next表"><strong>next表</strong></h3><p>注意上述的过程是可以重复使用的，比如没动T中的字符与P[5]不匹配时，都可以将P字符串向右移动两位，因此我们有必要建一张表，表中存的信息是当某位与T中的字符不匹配时我们应该将P字符串向右移动几位，这张表我们称为next表。<br>为了理解这张表是如何构造的，我们在说明一下，在暴力匹配中的第6次匹配过程中，P[11]与T中的字符不匹配，考察P[1..10]=xyxyyxyxyx, 因为刚经过匹配，可以知道P[1..10]=A[6..15]，因此可以利用这个信息来确定需要将P向右移动几位。这就是计算和P中的前缀匹配的P[1..10]中的最大后缀，和前面的例子类似，如图可以看出满足条件的后缀长度是3。<br><img src="suffix.jpg" alt="求匹配的最长后缀"><br>下面介绍构造表的思想，对每个P中的位置i都要计算出P[1..(i-1)]的最大后缀，如果后缀的长度是j，则T中当前不匹配的字符就可以跳过多余的比较过程直接跟P[j+1]比较，因为已经知道T中最近匹配的j个字符能和P的前缀字符匹配。而且还可以知道我们得到的是最大后缀，所以P在向左一位就不能匹配了。<br>现在假设有了next表，next表中的值如下图</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">位置</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th>6</th>
+<th style="text-align:center">7</th>
+<th style="text-align:center">8</th>
+<th style="text-align:center">9</th>
+<th style="text-align:center">10</th>
+<th style="text-align:center">11</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">字符</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">y</td>
+<td>x</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">y</td>
+<td style="text-align:center">x</td>
+<td style="text-align:center">x</td>
+</tr>
+<tr>
+<td style="text-align:center">next</td>
+<td style="text-align:center">-1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td>0</td>
+<td style="text-align:center">1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="匹配算法"><strong>匹配算法</strong></h3><p>现在有了next表，介绍一下匹配过程。</p>
+<blockquote>
+<p>T中的字符与P中的字符一一比较，直到出现不匹配。假设不匹配发生在P[i], 查找next表，然后将当前的T中的字符与P[next[i]+1]比较，仍然不匹配，则与P[next[next[i]+1]+1]比较，直到匹配为止。若最后到P[1]仍不匹配，在T中向右移动一位，重新开始匹配过程。</p>
+</blockquote>
+<h3 id="next表的计算"><strong>next表的计算</strong></h3><p>现在介绍如何计算next表。利用归纳法，现在next[2]=0作为归纳基础，假设计算出1,2,3….i-1的next值，可以根据计算出来的next值计算next[i],分两种情况：</p>
+<blockquote>
+<p>1.若P[ -1]=P[next[i-1]+1],说明P[i-1]可以扩展最大后缀，next[i] = next[i-1] + 1;<br>2.若P[i-1]!=P[next[i-1]+1],现在已经知道P[1..(i-2)]的最大后缀是和P[1..next[i-1]]匹配的，P[i-1]!=P[next[i-1]+1],相当于在P[next[i-1]+1]处发生了不匹配。上面的匹配过程已经说过，若P[next[i-1]+1]不匹配，就去查P[next[next[i-1]+1]+1],看是否与P[i-1]相匹配，直到查到匹配，或是回到开始位置。</p>
+</blockquote>
+<h2 id="复杂度"><strong>复杂度</strong></h2><p>T中的字符要与P中的字符比较，若匹配，则继续，若不匹配，则T中的当前字符要与P中next表中指向的字符比较。若T[i]不匹配，那么需要查找几次next表呢，若与P[k]不匹配，最多查找k次，这相当于P向前移动了k位，最多需要前移n次，因此算法复杂度为O(n)。</p>
+<p>注：本文是根据《算法引论——一种创造性方法》（Introdction to Algorithms: A Creative Approach）中的5.8节整理。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/algorithms/">algorithms</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/algorithms/">algorithms</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://xukai.xyz/2016/07/11/KMP/" data-title="字符串匹配--KMP算法 | XuKai" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/07/20/vim-search-and-replace/" title="vim -- 查找和替换">
+  <strong>上一篇：</strong><br/>
+  <span>
+  vim -- 查找和替换</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/07/06/micarray/"  title="MIC中部分数组的分配以及数组之间的传输">
+ <strong>下一篇：</strong><br/> 
+ <span>MIC中部分数组的分配以及数组之间的传输
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#暴力匹配"><span class="toc-number">1.</span> <span class="toc-text">暴力匹配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KMP算法"><span class="toc-number">2.</span> <span class="toc-text">KMP算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改进"><span class="toc-number">2.1.</span> <span class="toc-text">改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next表"><span class="toc-number">2.2.</span> <span class="toc-text">next表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#匹配算法"><span class="toc-number">2.3.</span> <span class="toc-text">匹配算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#next表的计算"><span class="toc-number">2.4.</span> <span class="toc-text">next表的计算</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#复杂度"><span class="toc-number">3.</span> <span class="toc-text">复杂度</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/MIC-GPU/" title="MIC/GPU">MIC/GPU<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Intel-Xeon-Phi-MIC/" title="Intel Xeon Phi/MIC">Intel Xeon Phi/MIC<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/vim/" title="vim">vim<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/algorithms/" title="algorithms">algorithms<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.zhangjikai.com/" target="_blank" title="ZJK&#39;s blog">ZJK&#39;s blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://blog.throneshuai.info/" target="_blank" title="shuai&#39;s blog">shuai&#39;s blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Be yourself! <br/>
+			I want to know !</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/Xu-Kai" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Xu Kai">Xu Kai</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'sdxk';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fnull' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

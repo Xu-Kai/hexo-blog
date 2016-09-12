@@ -1,0 +1,535 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>编译安装GCC 5.2.0 | XuKai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Xu Kai">
+    
+
+    
+    <meta name="description" content="记录编译GCC 5.2.0时遇到的问题和解决方法，以备日后查询。
+使用的服务器是CentOS6，自带的gcc编译器4.4.2版本，要是完全支持c++11需要4.8版本以上的，完全没法写C++11的代码，因为不能升级操作系统也没有root权限，只能自己下载源码编译。
+安装过程只好记录下来。
+安装依赖库GCC依赖于gmp 4.2+, mpfr 2.4+和mpc 0.8+，这里直接下载安装最新的版本。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译安装GCC 5.2.0">
+<meta property="og:url" content="http://xukai.xyz/2015/12/13/gccinstall/index.html">
+<meta property="og:site_name" content="XuKai">
+<meta property="og:description" content="记录编译GCC 5.2.0时遇到的问题和解决方法，以备日后查询。
+使用的服务器是CentOS6，自带的gcc编译器4.4.2版本，要是完全支持c++11需要4.8版本以上的，完全没法写C++11的代码，因为不能升级操作系统也没有root权限，只能自己下载源码编译。
+安装过程只好记录下来。
+安装依赖库GCC依赖于gmp 4.2+, mpfr 2.4+和mpc 0.8+，这里直接下载安装最新的版本。">
+<meta property="og:updated_time" content="2015-12-13T11:01:04.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="编译安装GCC 5.2.0">
+<meta name="twitter:description" content="记录编译GCC 5.2.0时遇到的问题和解决方法，以备日后查询。
+使用的服务器是CentOS6，自带的gcc编译器4.4.2版本，要是完全支持c++11需要4.8版本以上的，完全没法写C++11的代码，因为不能升级操作系统也没有root权限，只能自己下载源码编译。
+安装过程只好记录下来。
+安装依赖库GCC依赖于gmp 4.2+, mpfr 2.4+和mpc 0.8+，这里直接下载安装最新的版本。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="XuKai" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.png">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/name2.png" alt="XuKai" title="XuKai"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="XuKai">XuKai</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:xukai.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/12/13/gccinstall/" title="编译安装GCC 5.2.0" itemprop="url">编译安装GCC 5.2.0</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Xu Kai" target="_blank" itemprop="author">Xu Kai</a>
+		
+  <p class="article-time">
+    <time datetime="2015-12-13T10:28:28.000Z" itemprop="datePublished"> 发表于 2015-12-13</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装依赖库"><span class="toc-number">1.</span> <span class="toc-text">安装依赖库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装gmp_6-0"><span class="toc-number">1.1.</span> <span class="toc-text">安装gmp 6.0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装mpfr_3-1-3"><span class="toc-number">1.2.</span> <span class="toc-text">安装mpfr 3.1.3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装mpc_1-0-3"><span class="toc-number">1.3.</span> <span class="toc-text">安装mpc 1.0.3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译和安装GCC"><span class="toc-number">2.</span> <span class="toc-text">编译和安装GCC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#下载GCC并解压。"><span class="toc-number">2.1.</span> <span class="toc-text">下载GCC并解压。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置GCC"><span class="toc-number">2.2.</span> <span class="toc-text">配置GCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#编译GCC"><span class="toc-number">2.3.</span> <span class="toc-text">编译GCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装GCC"><span class="toc-number">2.4.</span> <span class="toc-text">安装GCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置_-bashrc"><span class="toc-number">2.5.</span> <span class="toc-text">配置 .bashrc</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">3.</span> <span class="toc-text">测试</span></a></li></ol>
+		
+		</div>
+		
+		<p>记录编译GCC 5.2.0时遇到的问题和解决方法，以备日后查询。</p>
+<p>使用的服务器是CentOS6，自带的gcc编译器4.4.2版本，要是完全支持c++11需要4.8版本以上的，完全没法写C++11的代码，因为不能升级操作系统也没有root权限，只能自己下载源码编译。</p>
+<p>安装过程只好记录下来。</p>
+<h3 id="安装依赖库">安装依赖库</h3><p>GCC依赖于gmp 4.2+, mpfr 2.4+和mpc 0.8+，这里直接下载安装最新的版本。</p>
+<p>我将依赖库装在/home/users/xk/gcc-5.2目录下</p>
+<h4 id="安装gmp_6-0">安装gmp 6.0</h4><p>wget <a href="https://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2" target="_blank" rel="external">https://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2</a><br>tar xvf gmp-6.0.0a.tar.bz2<br>cd gmp-6.0.0<br>./configure –prefix=/home/users/xk/gcc-5.2<br>make -j4<br>make check<br>make install</p>
+<h4 id="安装mpfr_3-1-3">安装mpfr 3.1.3</h4><p>mpfr依赖于gmp。</p>
+<p>wget <a href="http://www.mpfr.org/mpfr-current/mpfr-3.1.3.tar.bz2" target="_blank" rel="external">http://www.mpfr.org/mpfr-current/mpfr-3.1.3.tar.bz2</a><br>tar xvf mpfr-3.1.3.tar.bz2<br>cd mpfr-3.1.3<br>./configure –prefix==/home/users/xk/gcc-5.2 \<br>    –with-gmp-include=/home/users/xk/gcc-5.2/include \<br>    –with-gmp-lib=/home/users/xk/gcc-5.2/lib<br>make -j4<br>make check<br>make install</p>
+<h4 id="安装mpc_1-0-3">安装mpc 1.0.3</h4><p>mpc依赖于gmp和mpfr。<br>wget ftp://ftp.gnu.org/gnu/mpc/mpc-1.0.3.tar.gz<br>tar xvf mpc-1.0.3.tar.gz<br>cd mpc-1.0.3<br>./configure –prefix==/home/users/xk/gcc-5.2 \<br>–with-gmp-include=/home/users/xk/gcc-5.2/include \<br>–with-gmp-lib=/home/users/xk/gcc-5.2/lib \<br>–with-mpfr-include=/home/users/xk/gcc-5.2/include \<br>–with-mpfr-lib=/home/users/xk/gcc-5.2/lib<br>make -j4<br>make check<br>make install</p>
+<h3 id="编译和安装GCC">编译和安装GCC</h3><p>建议先阅读下官方的安装文档。</p>
+<h4 id="下载GCC并解压。">下载GCC并解压。</h4><p>wget ftp://ftp.gnu.org/gnu/gcc/gcc-5.2.0/gcc-5.2.0.tar.bz2<br>tar xvf gcc-5.2.0.tar.bz2<br>cd gcc-5.2.0</p>
+<p>在/home/users/xk/编辑 .bashrc, 添加LD_LIBRARY_APTH=/home/users/xk/gcc-5.2/lib</p>
+<h4 id="配置GCC">配置GCC</h4><p>./configure \<br>    –prefix=–with-gmp-include=/home/users/xk/ \<br>    –with-gmp-include=/home/users/xk/gcc-5.2/include \<br>    –with-gmp-lib=/home/users/xk/gcc-5.2/lib \<br>    –with-mpfr-include=/home/users/xk/gcc-5.2/include \<br>    –with-mpfr-lib=/home/users/xk/gcc-5.2/lib \<br>    –with-mpc-include=/home/users/xk/gcc-5.2/include \<br>    –with-mpc-lib=/home/users/xk/gcc-5.2/lib \<br>    –enable-languages=c,c++ \<br>    –enable-threads=posix \<br>    –disable-multilib</p>
+<p>详细的配置项说明可参考安装文档，这里只编译c和c++的编译器。</p>
+<h4 id="编译GCC">编译GCC</h4><p>后运行如下命令:</p>
+<p>make -j8</p>
+<h4 id="安装GCC">安装GCC</h4><p>如果编译顺利通过，make install即可。</p>
+<p>gcc和g++被安装到/home/users/xk/bin目录下，libgcc和libstdc++被安装到/home/users/xk/lib64(x64)。</p>
+<h4 id="配置_-bashrc">配置 .bashrc</h4><p>vim ~/.bashrc</p>
+<p>export LD_LIBRARY_PATH=/home/users/xk/gcc-5.2/lib:/home/users/xk/lib:/home/users/xk/lib64<br>export CPLUS_INCLUDE_PATH=/home/users/xk/include:/home/users/xk/boost-1-58/include<br>export GXX_ROOT=/home/users/xk/lib/gcc/x86_64-unknown-linux-gnu/5.2.0/<br>export C_INCLUDE_PATH=/home/users/xk/include:/home/users/xk/boost-1-58/include</p>
+<p>source ~/.bashrc</p>
+<h3 id="测试">测试</h3><p>写一个简单的cc测试下新安装的编译器。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;atomic&gt;</span><br><span class="line">#include &lt;regex&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    atomic&lt;long long&gt; num(1L &lt;&lt; 14);</span><br><span class="line">    cout &lt;&lt; ++num &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    regex r("[0-9]+");</span><br><span class="line">    string s("0abc11abc222cba");</span><br><span class="line">    sregex_iterator ib(s.begin(), s.end(), r);</span><br><span class="line">    sregex_iterator ie;</span><br><span class="line">    cout &lt;&lt; "search numbers in: " &lt;&lt; s &lt;&lt; endl;</span><br><span class="line">    for (sregex_iterator i = ib; i != ie; ++i) &#123;</span><br><span class="line">        cout &lt;&lt; "match: " &lt;&lt; i-&gt;str() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>编译并运行:</p>
+<p>g++ -std=c++11 test.cc -o test<br>./test</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/C-C/">C/C++</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/C-C/">C/C++</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://xukai.xyz/2015/12/13/gccinstall/" data-title="编译安装GCC 5.2.0 | XuKai" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/07/01/bandwidthforinteldevice/" title="Intel Xeon Phi的内存带宽">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Intel Xeon Phi的内存带宽</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装依赖库"><span class="toc-number">1.</span> <span class="toc-text">安装依赖库</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#安装gmp_6-0"><span class="toc-number">1.1.</span> <span class="toc-text">安装gmp 6.0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装mpfr_3-1-3"><span class="toc-number">1.2.</span> <span class="toc-text">安装mpfr 3.1.3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装mpc_1-0-3"><span class="toc-number">1.3.</span> <span class="toc-text">安装mpc 1.0.3</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译和安装GCC"><span class="toc-number">2.</span> <span class="toc-text">编译和安装GCC</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#下载GCC并解压。"><span class="toc-number">2.1.</span> <span class="toc-text">下载GCC并解压。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置GCC"><span class="toc-number">2.2.</span> <span class="toc-text">配置GCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#编译GCC"><span class="toc-number">2.3.</span> <span class="toc-text">编译GCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装GCC"><span class="toc-number">2.4.</span> <span class="toc-text">安装GCC</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置_-bashrc"><span class="toc-number">2.5.</span> <span class="toc-text">配置 .bashrc</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">3.</span> <span class="toc-text">测试</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/MIC-GPU/" title="MIC/GPU">MIC/GPU<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Intel-Xeon-Phi-MIC/" title="Intel Xeon Phi/MIC">Intel Xeon Phi/MIC<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/vim/" title="vim">vim<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/algorithms/" title="algorithms">algorithms<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.zhangjikai.com/" target="_blank" title="ZJK&#39;s blog">ZJK&#39;s blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://blog.throneshuai.info/" target="_blank" title="shuai&#39;s blog">shuai&#39;s blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Be yourself! <br/>
+			I want to know !</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/Xu-Kai" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Xu Kai">Xu Kai</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'sdxk';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fnull' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
