@@ -1,0 +1,525 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+  
+    <title>分治关系递推公式的求解 | XuKai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Xu Kai">
+    
+
+    
+    <meta name="description" content="在分治算法中，问题通常被分为几个子问题，其中每个子问题也将被递归求解，得到结果后，在使用一个操作来组合子问题的的解得到原始问题的解。假设有$a$个子问题，每个问题的规模是原始问题的$\frac{1}{b}$    ，并且用于组合各个子问题解的算法运行时间是$cn^{k}$，其中$a, b, c$和$k$是常数，即$$T(n)=aT(\frac{n}{b}) + cn^{k}$$为了简化，假定$n=">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分治关系递推公式的求解">
+<meta property="og:url" content="http://xukai.xyz/2016/11/22/recursion/index.html">
+<meta property="og:site_name" content="XuKai">
+<meta property="og:description" content="在分治算法中，问题通常被分为几个子问题，其中每个子问题也将被递归求解，得到结果后，在使用一个操作来组合子问题的的解得到原始问题的解。假设有$a$个子问题，每个问题的规模是原始问题的$\frac{1}{b}$    ，并且用于组合各个子问题解的算法运行时间是$cn^{k}$，其中$a, b, c$和$k$是常数，即$$T(n)=aT(\frac{n}{b}) + cn^{k}$$为了简化，假定$n=">
+<meta property="og:updated_time" content="2016-11-22T08:12:34.829Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分治关系递推公式的求解">
+<meta name="twitter:description" content="在分治算法中，问题通常被分为几个子问题，其中每个子问题也将被递归求解，得到结果后，在使用一个操作来组合子问题的的解得到原始问题的解。假设有$a$个子问题，每个问题的规模是原始问题的$\frac{1}{b}$    ，并且用于组合各个子问题解的算法运行时间是$cn^{k}$，其中$a, b, c$和$k$是常数，即$$T(n)=aT(\frac{n}{b}) + cn^{k}$$为了简化，假定$n=">
+
+    
+    <link rel="alternative" href="/atom.xml" title="XuKai" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.png">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+  <body>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/name2.png" alt="XuKai" title="XuKai"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="XuKai">XuKai</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:xukai.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/22/recursion/" title="分治关系递推公式的求解" itemprop="url">分治关系递推公式的求解</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Xu Kai" target="_blank" itemprop="author">Xu Kai</a>
+		
+  <p class="article-time">
+    <time datetime="2016-11-22T05:16:26.000Z" itemprop="datePublished"> 发表于 2016-11-22</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			
+		
+		</div>
+		
+		<p>在分治算法中，问题通常被分为几个子问题，其中每个子问题也将被递归求解，得到结果后，在使用一个操作来组合子问题的的解得到原始问题的解。假设有$a$个子问题，每个问题的规模是原始问题的$\frac{1}{b}$    ，并且用于组合各个子问题解的算法运行时间是$cn^{k}$，其中$a, b, c$和$k$是常数，即<br>$$T(n)=aT(\frac{n}{b}) + cn^{k}$$<br>为了简化，假定$n=b^{m}$，则$\frac{n}{b}$总是一个整数($b$是一个比1大的整数)。尝试展开上式：<br>$$T(n)=a(aT(\frac{n}{b^2}) + c(\frac{n}{b})^{k}) + cn^{k}=a(a(aT(\frac{n}{b^3}) + c(\frac{n}{b^2})^{k})  + c(\frac{n}{b})^{k}) + cn^{k}$$<br>一般来说，如果展开到$\frac{n}{b^m}=1$，可以得到<br>$$T(n)=a(a(…T(\frac{n}{b^m}) + c(\frac{n}{b^{m-1}})^{k})  + …) + cn^{k}$$<br>假设$T(1)=c$(对不同的值对最终结果的影响仅仅是常数上变化)。那么<br>$$T(n)=ca^{m} + ca^{m-1}b^{k} + ca^{m-2}b^{2k} + … + cb^{mk}$$<br>这意味着<br>$$T(n)=c\sum_{n=1}^{m}a^{m-i}b^{ik}$$</p>
+<p>$$=ca\sum_{n=1}^{m}(\frac{b^{k}}{a})^i$$<br>这是一个简单的几何级数，分三种情况，分别取决于 $\frac{b^k}{a}$ 是否小于，大于或等于1。<br><strong>情况1：</strong> $a&gt;b^k$<br>这种情况 下，几何级数的因子小于1，所以当$m$趋于无穷时，级数收敛于常数。因此，$T(n)=O(a^m)$。由于$m=\log_2n$，我们得到$a^m=a^{\log_bn}=n^{\log_ba}$(最后一个等式可以通过对两边都取以b为底数的对数得证)。所以有<br>$$T(n)=O(n^{\log_ba})$$<br><strong>情况2：</strong> $a=b^k$<br>在此情况下，几何级数的因子等于1，从而$T(n)=O(a^mm)$。注意$a=b^k$意味着$\log_ba=k$且$m=O(logn)$。所以有<br>$$T(n)=O(n^klogn)$$<br><strong>情况3：</strong> $a&lt;b^k$<br>在此情况下，几何级数的因子大于1。为了计算几何级数和和，可以使用标准表达式。用$F$($F$是一个常数)来表示$\frac{b^k}{a}$。由于级数的第一个元素是$a^m$，我们有<br>$$T(n)=a^m\frac{F^{m+1} - 1}{F-1}=O(a^mF^m)=O((b^k)^m)=O((b^m)^k)=O(n^k)$$。<br>以上三种情况可以总结在下面定理。<br><strong>定理：</strong><br>$a$和$b$为整数常数，$a\le1, b \le2$且$c$和$k$是正常数，则递推关系$T(n)=aT(\frac{n}{b}) + cn^{k}$的解是</p>
+<p>$$f(n)=\begin{cases}O(n^{\log_ba}),&amp;\text{if}&amp; a&gt;b^k\\O(n^{k}\log_ba),&amp;\text{if}&amp;a=b^k\\O(n^{k}) &amp;\text{if} &amp;a&lt;b^k \end{cases}$$</p>
+<blockquote>
+<p>Written with <a href="https://stackedit.io/" target="_blank" rel="external">StackEdit</a>.</p>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/algorithms/">algorithms</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/algorithms/">algorithms</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://xukai.xyz/2016/11/22/recursion/" data-title="分治关系递推公式的求解 | XuKai" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/09/12/hello-world/"  title="Hello World">
+ <strong>下一篇：</strong><br/> 
+ <span>Hello World
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/MIC-GPU/" title="MIC/GPU">MIC/GPU<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/algorithms/" title="algorithms">algorithms<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Intel-Xeon-Phi-MIC/" title="Intel Xeon Phi/MIC">Intel Xeon Phi/MIC<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/vim/" title="vim">vim<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.zhangjikai.com/" target="_blank" title="ZJK&#39;s blog">ZJK&#39;s blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://blog.throneclay.com/" target="_blank" title="shuai&#39;s blog">shuai&#39;s blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Be yourself! <br/>
+			I want to know !</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/Xu-Kai" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Xu Kai">Xu Kai</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'sdxk';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fnull' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End --><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  </body>
+</html>
