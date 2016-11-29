@@ -1,0 +1,849 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+  
+    <title>Shell 简单教程(上) | XuKai</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Xu Kai">
+    
+
+    
+    <meta name="description" content="经常使用Linux的用户对shell肯定不陌生，由于经常使用shell脚本，因此记录了一些学shell的笔记，也算是总结吧。
+第一个shell脚本使用vim编辑第一个脚本1$ vim first.sh
+将以下内容输入到shell脚本中1234567clearecho &quot;Hello $USER&quot;echo &quot;Today is \c &quot;;dateecho &quot;Number of user login :">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell 简单教程(上)">
+<meta property="og:url" content="http://xukai.xyz/2016/11/24/shell1/index.html">
+<meta property="og:site_name" content="XuKai">
+<meta property="og:description" content="经常使用Linux的用户对shell肯定不陌生，由于经常使用shell脚本，因此记录了一些学shell的笔记，也算是总结吧。
+第一个shell脚本使用vim编辑第一个脚本1$ vim first.sh
+将以下内容输入到shell脚本中1234567clearecho &quot;Hello $USER&quot;echo &quot;Today is \c &quot;;dateecho &quot;Number of user login :">
+<meta property="og:updated_time" content="2016-11-29T11:46:32.749Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shell 简单教程(上)">
+<meta name="twitter:description" content="经常使用Linux的用户对shell肯定不陌生，由于经常使用shell脚本，因此记录了一些学shell的笔记，也算是总结吧。
+第一个shell脚本使用vim编辑第一个脚本1$ vim first.sh
+将以下内容输入到shell脚本中1234567clearecho &quot;Hello $USER&quot;echo &quot;Today is \c &quot;;dateecho &quot;Number of user login :">
+
+    
+    <link rel="alternative" href="/atom.xml" title="XuKai" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.png">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+  <body>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/name2.png" alt="XuKai" title="XuKai"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="XuKai">XuKai</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:xukai.xyz">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/11/24/shell1/" title="Shell 简单教程(上)" itemprop="url">Shell 简单教程(上)</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Xu Kai" target="_blank" itemprop="author">Xu Kai</a>
+		
+  <p class="article-time">
+    <time datetime="2016-11-24T13:11:05.000Z" itemprop="datePublished"> 发表于 2016-11-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#第一个shell脚本"><span class="toc-number">1.</span> <span class="toc-text">第一个shell脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统变量"><span class="toc-number">2.</span> <span class="toc-text">系统变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量的定义"><span class="toc-number">3.</span> <span class="toc-text">变量的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#echo命令"><span class="toc-number">4.</span> <span class="toc-text">echo命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#打印彩色字符串"><span class="toc-number">5.</span> <span class="toc-text">打印彩色字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#算数运算"><span class="toc-number">6.</span> <span class="toc-text">算数运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令退出状态"><span class="toc-number">7.</span> <span class="toc-text">命令退出状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于变量"><span class="toc-number">8.</span> <span class="toc-text">关于变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道"><span class="toc-number">9.</span> <span class="toc-text">管道</span></a></li></ol>
+		
+		</div>
+		
+		<p>经常使用Linux的用户对shell肯定不陌生，由于经常使用shell脚本，因此记录了一些学shell的笔记，也算是总结吧。</p>
+<h3 id="第一个shell脚本"><strong>第一个shell脚本</strong></h3><p>使用vim编辑第一个脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim first.sh</span><br></pre></td></tr></table></figure></p>
+<p>将以下内容输入到shell脚本中<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">clear</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Hello <span class="variable">$USER</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Today is \c "</span>;date</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Number of user login : \c"</span> ; who | wc <span class="operator">-l</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Calendar"</span></span><br><span class="line">cal</span><br><span class="line"><span class="built_in">exit</span> <span class="number">0</span></span><br></pre></td></tr></table></figure></p>
+<p>执行时需要更改以下权限<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chomd <span class="number">755</span> first.sh</span><br><span class="line">$ ./first.sh</span><br></pre></td></tr></table></figure></p>
+<p>或者直接执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sh first.sh</span><br></pre></td></tr></table></figure></p>
+<h3 id="系统变量"><strong>系统变量</strong></h3><p>写完第一个脚本，现在开始熟悉以下系统变量。</p>
+<p>表中列出了一些系统变量</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">系统变量名称</th>
+<th style="text-align:left">变量名的意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">BASH=/bin/bash    shell</td>
+<td style="text-align:left">名</td>
+</tr>
+<tr>
+<td style="text-align:left">BASH_VERSION=1.14.7(1)</td>
+<td style="text-align:left">shell版本名</td>
+</tr>
+<tr>
+<td style="text-align:left">COLUMNS=80</td>
+<td style="text-align:left">屏幕中的第几列</td>
+</tr>
+<tr>
+<td style="text-align:left">HOME=/home/vivek</td>
+<td style="text-align:left">home目录</td>
+</tr>
+<tr>
+<td style="text-align:left">LINES=25</td>
+<td style="text-align:left">屏幕中的第几列</td>
+</tr>
+<tr>
+<td style="text-align:left">LOGNAME=students</td>
+<td style="text-align:left">当前的登录名</td>
+</tr>
+<tr>
+<td style="text-align:left">OSTYPE=Linux</td>
+<td style="text-align:left">操作系统名</td>
+</tr>
+<tr>
+<td style="text-align:left">PATH=/usr/bin:/sbin:/bin:/usr/sbin</td>
+<td style="text-align:left">PATH的设置</td>
+</tr>
+<tr>
+<td style="text-align:left">PS1=[\u@\h \W]\$</td>
+<td style="text-align:left">提示设置</td>
+</tr>
+<tr>
+<td style="text-align:left">PWD=/home/students/Common</td>
+<td style="text-align:left">当前工作目录</td>
+</tr>
+<tr>
+<td style="text-align:left">SHELL=/bin/bash</td>
+<td style="text-align:left">shell名</td>
+</tr>
+<tr>
+<td style="text-align:left">USERNAME=vivek</td>
+<td style="text-align:left">当前登录的用户名</td>
+</tr>
+</tbody>
+</table>
+<h3 id="变量的定义"><strong>变量的定义</strong></h3><p>定义的格式如下：</p>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="annotation">variable</span> name=<span class="keyword">value</span></span><br></pre></td></tr></table></figure>
+<p>例如<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ no=<span class="number">10</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$no</span></span><br></pre></td></tr></table></figure></p>
+<p>注意变量名是区分大小写的</p>
+<p>no 与 No 不是一个变量</p>
+<p>定义一个NULL变量， 可以如下</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ vech=</span><br><span class="line">$ vech=<span class="string">""</span></span><br></pre></td></tr></table></figure>
+<h3 id="echo命令"><strong>echo命令</strong></h3><p>介绍一下echo命令的选项</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> [options] [string, variables...]</span><br></pre></td></tr></table></figure>
+<p>其中options可以为</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">options</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">-n</td>
+<td style="text-align:left">不作为一行输出，即输出后不换行</td>
+</tr>
+<tr>
+<td style="text-align:left">-e</td>
+<td style="text-align:left">将下面的反斜杠解释成转义字符：</td>
+</tr>
+<tr>
+<td style="text-align:left">\a</td>
+<td style="text-align:left">警报</td>
+</tr>
+<tr>
+<td style="text-align:left">\b</td>
+<td style="text-align:left">删除</td>
+</tr>
+<tr>
+<td style="text-align:left">\c</td>
+<td style="text-align:left">不换行</td>
+</tr>
+<tr>
+<td style="text-align:left">\n</td>
+<td style="text-align:left">新建一行</td>
+</tr>
+<tr>
+<td style="text-align:left">\r</td>
+<td style="text-align:left">回车键</td>
+</tr>
+<tr>
+<td style="text-align:left">\t</td>
+<td style="text-align:left">水平tab</td>
+</tr>
+<tr>
+<td style="text-align:left">\\</td>
+<td style="text-align:left">反斜杠</td>
+</tr>
+</tbody>
+</table>
+<p>例如</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="operator">-e</span> <span class="string">"An apple a day keeps away \a\t\tdoctor\n"</span></span><br></pre></td></tr></table></figure>
+<h3 id="打印彩色字符串"><strong>打印彩色字符串</strong></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="operator">-e</span> <span class="string">"\033[34m   Hello Colorful  World!"</span></span><br></pre></td></tr></table></figure>
+<p>1) 第一个\033是换码符</p>
+<p>2) 用[34m设置屏幕的前背景是蓝色</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">character or letter</th>
+<th style="text-align:left">use in CSI</th>
+<th style="text-align:left">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">h</td>
+<td style="text-align:left">设置ANSI模式</td>
+<td style="text-align:left">echo -e “\033[h”</td>
+</tr>
+<tr>
+<td style="text-align:left">l</td>
+<td style="text-align:left">清除ANSI模式</td>
+<td style="text-align:left">echo -e “\033[l”</td>
+</tr>
+<tr>
+<td style="text-align:left">m</td>
+<td style="text-align:left">设置输出字的颜色以及是否粗体</td>
+<td style="text-align:left">echo -e  “\033[35m Hello World”</td>
+</tr>
+<tr>
+<td style="text-align:left">q</td>
+<td style="text-align:left">设置num lock，caps lock，scroll lock开还是关</td>
+<td style="text-align:left">echo -e “\033[2q”</td>
+</tr>
+<tr>
+<td style="text-align:left">s</td>
+<td style="text-align:left">存储当前光标的x,y坐标还有属性</td>
+<td style="text-align:left">echo -e “\033[7s”</td>
+</tr>
+<tr>
+<td style="text-align:left">u</td>
+<td style="text-align:left">重新存储当前光标的x,y坐标还有属性</td>
+<td style="text-align:left">echo -e “\033[8u”</td>
+</tr>
+</tbody>
+</table>
+<p>其中m参数的意义如下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">意义　</th>
+<th style="text-align:left">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0</td>
+<td style="text-align:left">设置默认的颜色模式</td>
+</tr>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">设置粗体强度</td>
+<td style="text-align:left">\$ echo -e “I am \033[1m BOLD \033[0m Person”</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">设置暗淡强度</td>
+<td style="text-align:left">\$ echo -e “\033[1m  BOLD \033[2m DIM  \033[0m”</td>
+</tr>
+<tr>
+<td style="text-align:left">5</td>
+<td style="text-align:left">设置闪烁强度</td>
+<td style="text-align:left">\$ echo -e “\033[5m Flash!  \033[0m”</td>
+</tr>
+<tr>
+<td style="text-align:left">7</td>
+<td style="text-align:left">设置相反的效果</td>
+<td style="text-align:left">\$ echo -e “\033[7m Linux OS! Best OS!! \033[0m”</td>
+</tr>
+<tr>
+<td style="text-align:left">11</td>
+<td style="text-align:left">显示特殊控制字符图形字符。如按下Ａlt键和数字键盘按178，放开两个键;没有将被打印。试一下示例中的输出</td>
+<td style="text-align:left">\$ press alt + 178   \$  echo -e “\033[11m” \$ press alt + 178   \$ echo -e “\033[0m”$ press alt + 178</td>
+</tr>
+<tr>
+<td style="text-align:left">25</td>
+<td style="text-align:left">删除闪烁效果</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">27</td>
+<td style="text-align:left">删除相反效果</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:left">30 - 37</td>
+<td style="text-align:left">设置前景颜色：31 - 红色 32 - 绿色  xx - 自己试一下</td>
+<td style="text-align:left">\$ echo -e “\033[31m I am in Red”</td>
+</tr>
+<tr>
+<td style="text-align:left">40 - 47</td>
+<td style="text-align:left">设置背景颜色xx - 自己试一下</td>
+<td style="text-align:left">\$ echo -e “\033[44m Wow!!!”</td>
+</tr>
+</tbody>
+</table>
+<p>q参数的意义如下</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">参数</th>
+<th style="text-align:left">意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0</td>
+<td style="text-align:left">关掉所有键盘的LED灯</td>
+</tr>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">Scroll lock LED 打开，其他的关掉</td>
+</tr>
+<tr>
+<td style="text-align:left">2</td>
+<td style="text-align:left">Num lock LED 打开，其他的关掉</td>
+</tr>
+<tr>
+<td style="text-align:left">3</td>
+<td style="text-align:left">Caps lock LED 打开，其他的关掉</td>
+</tr>
+</tbody>
+</table>
+<h3 id="算数运算"><strong>算数运算</strong></h3><p>expr op1 math-operator op2<br>示例<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ expr <span class="number">1</span> + <span class="number">3</span></span><br><span class="line">$ expr <span class="number">2</span> - <span class="number">1</span></span><br><span class="line">$ expr <span class="number">10</span> / <span class="number">2</span></span><br><span class="line">$ expr <span class="number">20</span> % <span class="number">3</span></span><br><span class="line">$ expr <span class="number">10</span> \* <span class="number">3</span></span><br><span class="line">$ <span class="built_in">echo</span> `expr <span class="number">6</span> + <span class="number">3</span>`</span><br></pre></td></tr></table></figure></p>
+<p>注意乘法使用 * 而不是 *<br>注意最后一个示例不是单引号，是ESC键下面的键的符号<br>用双引号或单引号只是打印字符串, 如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">"expr 6 + 3"</span> <span class="comment"># It will print expr 6 + 3</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">'expr 6 + 3'</span> <span class="comment"># It will print expr 6 + 3</span></span><br></pre></td></tr></table></figure></p>
+<p>双引号： 在双引号里面的内容会将特殊字符替换<br>单引号： 在单引号里面的内容不会变，直接打印<br>反引号(即ESC键下面的键)：里面的内容作为命令执行之后替换</p>
+<p>如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> <span class="string">"Today is date"</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">'Today is date'</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">"Today is `date`"</span></span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">'Today is `date`'</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="命令退出状态"><strong>命令退出状态</strong></h3><p>1) 如果返回值是0, 则说明命令执行成功<br>2) 如果返回值不是0, 则说明命令没有执行成功，或者是脚本中一些命令没有执行成功<br>使用 \$?<br>用echo \$?查看上一条命令的执行状态<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ls</span><br><span class="line">$ <span class="built_in">echo</span> $?</span><br></pre></td></tr></table></figure></p>
+<h3 id="关于变量"><strong>关于变量</strong></h3><p>读取变量<br>读取变量名的格式如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">read</span> variable1, variable2,...variableN</span><br></pre></td></tr></table></figure></p>
+<p>编辑sayH文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"Your first name please:"</span></span><br><span class="line"><span class="built_in">read</span> fname</span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Hello <span class="variable">$fname</span>, Lets be friend!"</span></span><br></pre></td></tr></table></figure></p>
+<p>下面执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod <span class="number">755</span> sayH</span><br><span class="line">$ ./sayH</span><br></pre></td></tr></table></figure></p>
+<p>如果一行使用多个命令，命令之间使用；隔开<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ date;who</span><br></pre></td></tr></table></figure></p>
+<p>如果一个脚本有参数，在脚本内 \$0 是脚本名，\$1 是第一个参数， \$2 是第二个参数，\$# 是传递的参数个数， \$@ 或 $* 是所有的参数</p>
+<p>编辑demo文件<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#!/bin/sh</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Script that demos, command line args</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"Total number of command line argument are <span class="variable">$#</span>"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$0</span> is script name"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$1</span> is first argument"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"<span class="variable">$2</span> is second argument"</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"All of them are :- $* or <span class="variable">$@</span>"</span></span><br></pre></td></tr></table></figure></p>
+<p>执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod <span class="number">755</span> demo</span><br><span class="line">$ ./demo Hello World</span><br></pre></td></tr></table></figure></p>
+<h3 id="管道"><strong>管道</strong></h3><p>使用格式如下<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">command</span>1 | <span class="built_in">command</span>2</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ who | wc <span class="operator">-l</span></span><br></pre></td></tr></table></figure>
+<p>第一条命令的输出结果作为第二条命令的输入<br> bc是计算命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$bc</span></span><br><span class="line"><span class="number">5</span> + <span class="number">2</span> </span><br><span class="line"><span class="number">5</span> &gt; <span class="number">12</span></span><br><span class="line"><span class="number">5</span> == <span class="number">10</span></span><br><span class="line"><span class="number">5</span> != <span class="number">2</span></span><br><span class="line"><span class="number">5</span> == <span class="number">5</span></span><br><span class="line"><span class="number">12</span> &lt; <span class="number">2</span></span><br></pre></td></tr></table></figure></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">表达式</th>
+<th style="text-align:left">含义</th>
+<th style="text-align:left">答案</th>
+<th style="text-align:left">bc的结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">5&gt; 12</td>
+<td style="text-align:left">5是否大于12</td>
+<td style="text-align:left">NO</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">5 == 10</td>
+<td style="text-align:left">5是否等于10</td>
+<td style="text-align:left">NO</td>
+<td style="text-align:left">0</td>
+</tr>
+<tr>
+<td style="text-align:left">5 != 2</td>
+<td style="text-align:left">5是否不等于2</td>
+<td style="text-align:left">YES</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">5 == 5</td>
+<td style="text-align:left">5是否等于5</td>
+<td style="text-align:left">YES</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">12 &lt; 2</td>
+<td style="text-align:left">12是否小雨2</td>
+<td style="text-align:left">NO</td>
+<td style="text-align:left">0</td>
+</tr>
+</tbody>
+</table>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Linux/">Linux</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Linux/">Linux</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://xukai.xyz/2016/11/24/shell1/" data-title="Shell 简单教程(上) | XuKai" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/11/26/shell2/" title="shell 简单教程(中)">
+  <strong>上一篇：</strong><br/>
+  <span>
+  shell 简单教程(中)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/11/22/recursion/"  title="分治关系递推公式的求解">
+ <strong>下一篇：</strong><br/> 
+ <span>分治关系递推公式的求解
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+<section id="comments" class="comment">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#第一个shell脚本"><span class="toc-number">1.</span> <span class="toc-text">第一个shell脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统变量"><span class="toc-number">2.</span> <span class="toc-text">系统变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量的定义"><span class="toc-number">3.</span> <span class="toc-text">变量的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#echo命令"><span class="toc-number">4.</span> <span class="toc-text">echo命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#打印彩色字符串"><span class="toc-number">5.</span> <span class="toc-text">打印彩色字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#算数运算"><span class="toc-number">6.</span> <span class="toc-text">算数运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令退出状态"><span class="toc-number">7.</span> <span class="toc-text">命令退出状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关于变量"><span class="toc-number">8.</span> <span class="toc-text">关于变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#管道"><span class="toc-number">9.</span> <span class="toc-text">管道</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/Linux/" title="Linux">Linux<sup>3</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/MIC-GPU/" title="MIC/GPU">MIC/GPU<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/algorithms/" title="algorithms">algorithms<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Linux/" title="Linux">Linux<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/algorithms/" title="algorithms">algorithms<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Intel-Xeon-Phi-MIC/" title="Intel Xeon Phi/MIC">Intel Xeon Phi/MIC<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/vim/" title="vim">vim<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hexo/" title="hexo">hexo<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-C/" title="C/C++">C/C++<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.zhangjikai.com/" target="_blank" title="ZJK&#39;s blog">ZJK&#39;s blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://blog.throneclay.com/" target="_blank" title="shuai&#39;s blog">shuai&#39;s blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Be yourself! <br/>
+			I want to know !</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/Xu-Kai" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Xu Kai">Xu Kai</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+<script type="text/javascript">
+
+var disqus_shortname = 'sdxk';
+
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+(function(){
+  var dsq = document.createElement('script');
+  dsq.type = 'text/javascript';
+  dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+}());
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3Fnull' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End --><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"],["\\(","\\)"]],"skipTags":["script","noscript","style","textarea","pre","code"],"processEscapes":true},"TeX":{"equationNumbers":{"autoNumber":"AMS"}}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+  </body>
+</html>
